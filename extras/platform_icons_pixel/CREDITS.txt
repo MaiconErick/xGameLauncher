@@ -1,0 +1,4 @@
+icons/    - es-theme-pixel-perfect by Jessika Rocha (MIT), partly from Starvingartist's
+            "Antiseptic Videogame Icons" pack. https://github.com/jessikarochas/es-theme-pixel-perfect
+consoles/ - es-theme-pixel by Eric Hettervik (Rookervik), CC BY-NC-SA; console art
+            upscaled 3x (nearest neighbour). https://github.com/RetroPie/es-theme-pixel

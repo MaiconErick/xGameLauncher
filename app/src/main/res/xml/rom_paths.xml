@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ROM files anywhere on internal storage or SD cards, shared read-only with emulators
+     as content:// uris when no ROM-folder (SAF) grant covers them. -->
+<paths>
+    <root-path name="root" path="/" />
+</paths>

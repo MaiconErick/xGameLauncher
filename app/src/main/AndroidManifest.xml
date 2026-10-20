@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- Powers the Apps tab's "recently used" sort. Requires the user to grant "Usage access"
+         in Settings → Apps → Special app access → Usage access. If missing, we fall back to
+         alphabetical sort silently. -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Draw the "Tracking / Lid closed / Game finished" overlay OVER a running game.
+         Special permission — user grants via Settings → Apps → Special access → Display over
+         other apps. Feature is silently no-op'd if not granted. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+    <application
+        android:name=".XGameLauncherApp"
+        android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:hardwareAccelerated="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.XGameLauncher">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:stateNotNeeded="true"
+            android:excludeFromRecents="true"
+            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|smallestScreenSize|uiMode|density|fontScale"
+            android:theme="@style/Theme.XGameLauncher">
+        </activity>
+
+        <!-- The only launcher/home entry: routes to the main launcher on the default display and
+             to xGL Bottom on any other display (Mjolnir picks apps per screen by package). -->
+        <activity
+            android:name=".HomeRouterActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:resizeableActivity="true"
+            android:taskAffinity="com.maiconerick.xgamelauncher.router">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.SECONDARY_HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Bottom-screen home (Thor's second display): SECONDARY_HOME for the system, HOME so
+             Megingjard can pick it per display. Own task so it never mixes with the main one. -->
+        <activity
+            android:name=".bottom.BottomHomeActivity"
+            android:exported="true"
+            android:label="xGL Bottom"
+            android:documentLaunchMode="never"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.maiconerick.xgamelauncher.bottom"
+            android:stateNotNeeded="true"
+            android:excludeFromRecents="true"
+            android:resizeableActivity="true"
+            android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|smallestScreenSize|uiMode|density|fontScale"
+            android:theme="@style/Theme.XGameLauncher.Wallpaper">
+        </activity>
+
+        <service
+            android:name=".tracker.TrackerService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="game_playtime_tracking" />
+        </service>
+
+        <!-- Tools tab: folder → Dropbox watcher, clipboard sync, ROM downloads. Runs only
+             while one of them needs it. -->
+        <service
+            android:name=".tools.ToolsService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="launcher_tools_sync_and_downloads" />
+        </service>
+
+        <receiver
+            android:name=".tracker.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+            <!-- {file.uri} fallback: ROM files shared with emulators as content:// (see RomUris). -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.roms"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rom_paths" />
+        </provider>
+    </application>
+</manifest>

@@ -1,0 +1,123 @@
+xGameLauncher TODO (received 2026-09-28)
+================================================
+Legend: [ ] open   [~] in progress   [x] done   [?] waiting on your answer
+Every item must also work on the RG353M (see CLAUDE.md checklist).
+Numbers match your original list.
+
+
+------------------------------------------------
+ORDER AGREED: EASY -> MEDIUM -> HARD -> finally 37, 19, 10.
+------------------------------------------------
+BIG ITEMS (answered; do these last)
+------------------------------------------------
+[x] 19 - Bottom-screen launcher (ANSWERED: go ahead, present options when we get there) (Nova replacement, works with Megingjard, widgets, live
+         wallpapers, swipe-up app drawer, horizontally scrolling home pages, built-in
+         widgets: playtime week/month/year, last played + replay, live session tracker,
+         FPS / CPU / battery stats, neon separators, space invaders).
+         -> I'll present the options first (second HOME activity in the same app vs a
+            separate companion app, how Megingjard picks per-display launchers, widget
+            host + live wallpaper constraints) and you choose. Big project: split into
+            phases once decided.
+[x] 37 - Tools tab. ANSWERED 2026-09-28:
+         - "romb" = romgi (open source on GitHub): download games into any platform.
+         - Clipboard: small PC script watches the Windows clipboard -> sends to the Pi; the
+           Pi keeps a clipboard history shared with every device running the app.
+         - Folder watcher: uploads new files under a folder to Dropbox, then deletes them.
+         - UI: each tool is a row with an ENABLED toggle on the left; clicking the row
+           opens that tool's settings on a new page.
+[x] 10 - Background maker for platforms (pick game art, collage with separators, move and
+         zoom each piece, separators: slanted bolt, red/black, etc.).
+         -> ANSWERED: the reference is the background image of the Windows platform on the
+            Thor (read it via ADB).
+
+
+------------------------------------------------
+EASY
+------------------------------------------------
+[x] 1  - Deleting a platform doesn't work; add a confirmation prompt.
+[x] 7  - Remove the animated border from the Home platform carousel (focused item only).
+[x] 13 - Show/Hide panel: icon instead of text.
+[x] 14 - Toggling the panel keeps the tile size, only the column count changes.
+[x] 21 - Bottom bar: real button icons (A/B/Y/L/R/ZL/ZR glyphs) instead of text.
+[x] 22 - Android platform header: Sort / Panel / Edit buttons not right-aligned.
+[x] 23 - Sort dropdown flickers if pressed before its animation finishes.
+[x] 29 - App accent colour random outside platforms; platform colour only inside a platform.
+[x] 30 - Wifi icon in accent colour only; clock back in the top bar.
+[x] 31 - Accent-coloured separator on the bottom bar, and add one to the top bar.
+[x] 34 - Platform accent option: "random colour every time I open it".
+[x] 35 - Setting to hide the button hints in the bottom bar (on by default).
+
+
+------------------------------------------------
+MEDIUM
+------------------------------------------------
+[x] 2  - Real folder picker (file-manager style) with Internal storage / SD card buttons.
+[x] 3  - Filename filter by extensions (e.g. "gba, zip, 7z") in addition to regex.
+[x] 4  - Basics page: D-pad stops working; B flashes the keyboard before going back.
+[x] 5  - Opening the folder picker (or other pickers) kicks back to the previous menu.
+[x] 6  - Back without saving: ask to save AND list what changed.
+[x] 8  - Settings: choose the gradient colours of the focus border.
+[x] 9  - Replace "xGL" with an animated space invader icon.
+[x] 16 - Sorting: add "time played", plus a secondary sort for never-played games.
+[x] 17 - Bottom bar items clickable (touch).
+[x] 18 - Rework Settings section pages: readable text (not grey on transparent), clear
+         separation between groups (cards / backgrounds / dividers).
+[x] 20 - Settings > Playtime: show latest session rows (all DB columns) and whether each
+         was already uploaded to Dropbox.
+[x] 24 - Bottom bar shows the platform strip (not clock/date); option to use PNG logos
+         instead of text; Home gives that height back to the platform background.
+[x] 25 - Settings: pixel navigation sounds (move / select / back), on/off + volume.
+[x] 26 - Session start/end overlay: opaque, game icon, fancier UI.
+[~] 27 - Check the app runs at 60fps and animations are smooth (measure on both devices).
+         -> 120Hz option added (Appearance). Frame stats still to be measured on device after real use.
+[x] 28 - Long-press an app in Apps: rename it; the new name is used everywhere.
+[x] 15 - Long-press the panel icon: dropdown for tile size, columns with panel on/off
+         (global settings).
+[x] 11 - Game detail: IGDB data (release date, summary, genres…), cached.
+[x] 12 - Game detail: playtime graph since the first session (shows gaps between sessions).
+[x] 36 - Windows games don't launch anymore. Read the forwarder files again (BannerHub,
+         Winlator flavours like cronyx); forwarder folder(s) set in the platform editor
+         (remove it from Settings > Sources); scan subfolders (BannerHub/, cronyx/…); if a
+         game has several players, add a chooser button next to Play; default = last used,
+         else first available.
+
+
+------------------------------------------------
+HARD
+------------------------------------------------
+[x] 32 - Settings: animated top/bottom bar backgrounds (falling pixels, katakana rain, …)
+         with speed / quantity sliders and a live preview. lowPower-aware.
+[x] 33 - More focus animations (e.g. pixel "explosion" particles beyond the card edges,
+         others researched), selectable with a live preview. lowPower-aware.
+[x] 10 - Background maker built (Skin → MAKE A BACKGROUND…); defaults match the Windows wallpaper (strips, black gaps, frame).
+[x] 19 - Bottom launcher built (option 1: xGL Bottom activity); not yet tried on the Thor.
+[x] 37 - Tools tab done (built; not yet tried on a device).
+
+
+------------------------------------------------
+2026-10-02
+------------------------------------------------
+[x] 38 - Tracker: BannerHub hands Windows games to CronyX/Winlator (another package) and
+         xGL flashes on the top screen in between; the session was closed as "Game closed"
+         / "Backgrounded" while the game booted. Now: during the first 3 min any newly
+         resumed non-frontend app is adopted as part of the game, the bottom-screen
+         launcher never counts as "back at the frontend", and a launcher flash while
+         booting gets the full 15s grace.
+[x] 39 - CronyX player launched com.cronyx/com.cronyx.XServerDisplayActivity (doesn't
+         exist); the class is com.winlator.cmod.XServerDisplayActivity.
+[x] 40 - Playtime editor (Settings → Playtime → Edit playtime, or A on a game's PLAYTIME
+         HISTORY card): filter, edit any column, add rows, delete one / all shown.
+         Mirrored to Dropbox 4s after the last edit; deletions pass the "never shrink"
+         guard (SessionEdits.pendingDeletes) and are tombstoned so Dropbox sync never
+         re-imports them.
+[x] 41 - Settings → Theme: Neon (original, keeps the user's own animations), Halloween,
+         Halloween AMOLED. Focus/bar animation settings are stored per theme group.
+         New focus styles: candle, bat orbit, slime. New bar FX: bats, embers, fog.
+         Halloween backdrop: moon, stars, fog, wisps, bats, ghost, cobwebs + spider,
+         graveyard. Creepster font on page titles. Bottom screen + session banner follow it.
+[x] 43 - CronyX-exported .desktop files have no container id, so CronyX fell back to
+         container 0 and opened its main screen. WindowsLauncher now passes
+         --ei container_id from the wine prefix (xuser-N) or, for a bare xuser prefix, the
+         active container (root readlink of imagefs/home/xuser).
+[ ] 42 - Try 38-41 on the devices (Graveyard Keeper via BannerHub → CronyX; theme on the
+         RG353M in low-power mode).
